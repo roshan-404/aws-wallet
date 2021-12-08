@@ -50,7 +50,7 @@ func CreateUser(user *models.User) (res Response, status int) {
 	// hash password
 	hash, hashErr := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
 	if hashErr != nil {
-		return Response{Success: false, Message: "Something went wrong!", Data: nil}, 500
+		return Response{Success: false, Message: "Something went wrongssdfsd!", Data: nil}, 500
 	}
 
 	// assign id & hash password
@@ -58,10 +58,10 @@ func CreateUser(user *models.User) (res Response, status int) {
 	user.Password = string(hash)
 
 	// createing new bucket
-	// BucketErr := repositry.CreateBucket(user.Username + "3782343489234890234890237")
-	// if BucketErr != nil {
-	// 	return Response{Success: false, Message: BucketErr.Error(), Data: nil}, 400
-	// }
+	BucketErr := repository.CreateBucket(user.Username + "3782343489234890234890237")
+	if BucketErr != nil {
+		return Response{Success: false, Message: BucketErr.Error(), Data: nil}, 400
+	}
 
 	// Add new user in database
 	err = repository.PutItem(user)

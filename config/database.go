@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
@@ -13,13 +14,18 @@ import (
 var DB_client *dynamodb.Client
 var S3_client *s3.Client
 
+
 func ConnectionDB() (*dynamodb.Client, error) {
+	creds := credentials.NewStaticCredentialsProvider(os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), "")
+	
 	//loading configs
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(os.Getenv("AWS_REGION")))
+	cfg, err  := config.LoadDefaultConfig(context.TODO(), config.WithCredentialsProvider(creds), config.WithRegion(os.Getenv("AWS_REGION")))
 	if err != nil {
 		return nil, err
 	}
+	
 
+	
 	//creating client 
 	S3_client = s3.NewFromConfig(cfg)
 	DB_client = dynamodb.NewFromConfig(cfg)
