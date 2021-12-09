@@ -1,11 +1,18 @@
 package controller
 
 import (
-	"fmt"
+	"aws-wallet/services"
 
 	"github.com/gin-gonic/gin"
 )
 
 func UploadItem(ctx *gin.Context) {
-	fmt.Fprintf(ctx.Writer, "Upload")
+	res, status := services.UploadFile(ctx)
+	if !res.Success {
+		ctx.JSON(status, res)
+		return
+	}
+
+	ctx.JSON(status, res)
 }
+

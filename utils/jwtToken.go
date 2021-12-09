@@ -14,7 +14,7 @@ var td = &models.TokenDetails{}
 
 func CreateToken(username string) (*models.TokenDetails, error) {
 	// min, _ := str2duration.ParseDuration(os.Getenv("EXPIRE_ACCESS_SECRET"))
-	td.AtExpires = time.Now().Add(time.Minute * 1).Unix()
+	td.AtExpires = time.Now().Add(time.Minute * 20).Unix()
 	td.RtExpires = time.Now().Add(time.Minute * 20).Unix()
 
 	var err error

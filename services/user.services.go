@@ -32,7 +32,7 @@ func VerifyUser(user *models.User) (res Response, status int) {
 		"refresh_token": token.RefreshToken,
 	}
 
-	return Response{Success: true, Message: "SignUp successful!", Data: tokens}, 200
+	return Response{Success: true, Message: "SignIn successful!", Data: tokens}, 200
 }
 
 func CreateUser(user *models.User) (res Response, status int) {
