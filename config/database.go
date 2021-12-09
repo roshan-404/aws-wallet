@@ -8,11 +8,13 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 var DB_client *dynamodb.Client
-var S3_client *s3.Client
+var S3session *s3.S3
 
 
 func ConnectionDB() (*dynamodb.Client, error) {
@@ -23,11 +25,13 @@ func ConnectionDB() (*dynamodb.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	
 
-	
+	//creating session
+	S3session = s3.New(session.Must(session.NewSession(&aws.Config{
+		Region: aws.String(os.Getenv("AWS_REGION")),
+	})))
+
 	//creating client 
-	S3_client = s3.NewFromConfig(cfg)
 	DB_client = dynamodb.NewFromConfig(cfg)
 
 	var tableName = os.Getenv("TABLE_NAME")

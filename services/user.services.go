@@ -56,9 +56,11 @@ func CreateUser(user *models.User) (res Response, status int) {
 	// assign id & hash password
 	user.Id = newId.String()
 	user.Password = string(hash)
-
+	// u := splitString(user.Username, " ")
+	bucketName := user.Username + "-buckets-" + user.Id
+	fmt.Println(bucketName)
 	// createing new bucket
-	BucketErr := repository.CreateBucket(user.Username + "3782343489234890234890237")
+	_, BucketErr := repository.CreateBucket(bucketName)
 	if BucketErr != nil {
 		return Response{Success: false, Message: BucketErr.Error(), Data: nil}, 400
 	}
