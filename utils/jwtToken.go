@@ -12,27 +12,31 @@ import (
 
 var td = &models.TokenDetails{}
 
-func CreateToken(username string) (*models.TokenDetails, error) {
-	// min, _ := str2duration.ParseDuration(os.Getenv("EXPIRE_ACCESS_SECRET"))
-	td.AtExpires = time.Now().Add(time.Minute * 20).Unix()
-	td.RtExpires = time.Now().Add(time.Minute * 20).Unix()
+func CreateToken(username string, id string) (*models.TokenDetails, error) {
+	
+	td.AtExpires = time.Now().Add(time.Minute * 40).Unix()
+	td.RtExpires = time.Now().Add(time.Hour * 2).Unix()
 
 	var err error
 	//Creating Access Token
+	fmt.Println(username, id)
 	atClaims := jwt.MapClaims{}
 	atClaims["expiresAt"] = td.AtExpires
 	atClaims["username"] = username
+	atClaims["userId"] = id
 	atClaims["authorized"] = true
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 	td.AccessToken, err = at.SignedString([]byte(os.Getenv("ACCESS_SECRET")))
 	if err != nil {
 		return nil, err
 	}
+	
 
 	//Creating Refresh Token
 	rtClaims := jwt.MapClaims{}
 	rtClaims["expiresAt"] = td.RtExpires
 	rtClaims["username"] = username
+	rtClaims["userId"] = id
 	rtClaims["authorized"] = true
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
 	td.RefreshToken, err = rt.SignedString([]byte(os.Getenv("REFRESH_SECRET")))
@@ -68,6 +72,11 @@ func VerifyAccessToken(ctx *gin.Context) (jwt.Claims, string) {
 		// extract expiresTime from token
 		ext := token.Claims.(jwt.MapClaims)
 		expiresTime := ext["expiresAt"]
+		username := ext["username"]
+		userId := ext["userId"]
+
+		ctx.Request.Header.Set("username", fmt.Sprintf("%v", username))
+		ctx.Request.Header.Set("userId", fmt.Sprintf("%v", userId))
 
 		if int64(expiresTime.(float64)) < time.Now().Unix() {
 			return nil, "Token expired!"

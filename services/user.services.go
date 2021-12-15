@@ -5,6 +5,7 @@ import (
 	"aws-wallet/repository"
 	"aws-wallet/utils"
 	"fmt"
+	"time"
 
 	uuid "github.com/gofrs/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -22,14 +23,20 @@ func VerifyUser(user *models.User) (res Response, status int) {
 		return Response{Success: false, Message: "Wrong password!", Data: nil}, 401
 	}
 
-	token, err := utils.CreateToken(user.Username)
+	token, err := utils.CreateToken(user.Username, fmt.Sprintf("%v", item["id"]))
 	if err != nil {
 		return Response{Message: "Something went wrong!", Data: nil, Success: false}, 500
 	}
 
+	AccessExpiresTime := time.Unix(token.AtExpires, 0).String()
+	RefreshExpiresTime := time.Unix(token.RtExpires, 0).String()
+
 	tokens := map[string]string{
 		"access_token":  token.AccessToken,
 		"refresh_token": token.RefreshToken,
+		"access-token-expiry" : AccessExpiresTime,
+		"refresh-token-expiry" : RefreshExpiresTime,
+
 	}
 
 	return Response{Success: true, Message: "SignIn successful!", Data: tokens}, 200

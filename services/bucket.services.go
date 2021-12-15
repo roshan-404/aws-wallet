@@ -1,11 +1,8 @@
 package services
 
 import (
-	"aws-wallet/config"
-	"fmt"
-
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/s3"
+	"aws-wallet/repository"
+	"aws-wallet/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,22 +11,37 @@ func UploadFile(ctx *gin.Context) (res Response, status int) {
 	file, handler, fileErr := ctx.Request.FormFile("myFile")
 
 	if fileErr != nil {
-		return Response{Success: false, Message: fileErr.Error(), Data: nil}, 503
+		return Response{Success: false, Message: fileErr.Error(), Data: nil}, 415
 	}
 	defer file.Close()
 
+	//getting the bucket name from the headers 
+	username := ctx.Request.Header.Get("username")
+	userid := ctx.Request.Header.Get("userId")
+	bucketName := utils.CreateBucketName(username, userid)
+
+	
 	// upload the file
-	fmt.Println("Uploading:", handler.Filename)
-	resp, err := config.S3session.PutObject(&s3.PutObjectInput{
-	  Body: file,
-	  Bucket: aws.String("roshankumar-buckets-4e91bd6f-5c81-41fd-93ff-aec9412d8953"),
-	  Key: aws.String(handler.Filename),
-	  ACL: aws.String(s3.BucketCannedACLPublicRead),
-	})
+	resp,err := repository.UploadObject(bucketName, handler.Filename, file)
   
 	if err != nil {
-	  fmt.Println(err)
+		return Response{Success: false, Message: err.Error(), Data: nil}, 400
 	}
   
-	return Response{Success: false, Message: "file uploaded successfully", Data: resp}, 503
+	return Response{Success: false, Message: "file uploaded successfully", Data: resp}, 200
+}
+
+func GetAllItem(ctx *gin.Context) (res Response, status int) {
+	//getting the bucket name from the headers 
+	username := ctx.Request.Header.Get("username")
+	userid := ctx.Request.Header.Get("userId")
+	bucketName := utils.CreateBucketName(username, userid)
+
+	//get all items
+	resp, err := repository.GetAllObject(bucketName)
+
+	if err != nil {
+		return Response{Success: false, Message: err.Error(), Data: nil}, 400
+	}
+	return Response{Success: false, Message: "file uploaded successfully", Data: resp},  200
 }

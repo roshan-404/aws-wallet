@@ -3,6 +3,7 @@ package repository
 import (
 	"aws-wallet/config"
 	"fmt"
+	"mime/multipart"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -32,4 +33,23 @@ func CreateBucket(bucketName string) (resp *s3.CreateBucketOutput, err error) {
 		}
 	}
 	return resp, nil
+}
+
+func UploadObject(bucketName string, fileName string, file multipart.File) (resp *s3.PutObjectOutput, err error){
+	fmt.Println("Uploading:", fileName)
+	resp, err = config.S3session.PutObject(&s3.PutObjectInput{
+		Body:   file,
+		Bucket: aws.String(bucketName),
+		Key:    aws.String(fileName),
+		ACL:    aws.String(s3.BucketCannedACLPublicRead),
+	})
+
+	return resp,err
+}
+
+func GetAllObject(bucketName string) (resp *s3.ListObjectsV2Output, err error){
+	resp, err = config.S3session.ListObjectsV2(&s3.ListObjectsV2Input{
+		Bucket: aws.String(bucketName),
+	})
+	return resp, err
 }
