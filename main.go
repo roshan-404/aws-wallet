@@ -5,18 +5,17 @@ import (
 	"aws-wallet/routes"
 	"fmt"
 	"os"
-
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 )
 
 func main() {
 	fmt.Println("AWS wallet starting ...")
 
 	// load environment variables
-	err := godotenv.Load(".env")
-	if err != nil {
-		fmt.Println("Error loading .env file")
-	}
+	// err := godotenv.Load(".env")
+	// if err != nil {
+	// 	fmt.Println("Error loading .env file")
+	// }
 
 	// stabling the database
 	_, dbErr := config.ConnectionDB()
