@@ -17,7 +17,7 @@ func main() {
 	// load environment variables
 	err := godotenv.Load(".env")
 	if err != nil {
-		fmt.Println("Error loading .env file")
+		fmt.Println("Error loading .env file.")
 	}
 
 	// stabling the database
