@@ -10,6 +10,7 @@ import (
 
 func main() {
 	fmt.Println("AWS wallet starting ...")
+	// changes from secondary branch
 
 	// load environment variables
 	// err := godotenv.Load(".env")
