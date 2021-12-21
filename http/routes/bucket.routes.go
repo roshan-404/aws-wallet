@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"aws-wallet/controller"
-	"aws-wallet/middleware"
+	"aws-wallet/http/controller"
+	"aws-wallet/http/middleware"
 
 	"github.com/gin-gonic/gin"
 )

@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"aws-wallet/config"
+	"aws-wallet/database/config"
 	"fmt"
 	"mime/multipart"
 	"os"

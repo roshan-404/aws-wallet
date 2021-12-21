@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"aws-wallet/models"
-	"aws-wallet/services"
+	"aws-wallet/database/models"
+	"aws-wallet/http/services"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

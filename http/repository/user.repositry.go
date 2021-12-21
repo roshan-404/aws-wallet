@@ -1,8 +1,8 @@
 package repository
 
 import (
-	c "aws-wallet/config"
-	"aws-wallet/models"
+	c "aws-wallet/database/config"
+	"aws-wallet/database/models"
 	"context"
 	"fmt"
 	"os"

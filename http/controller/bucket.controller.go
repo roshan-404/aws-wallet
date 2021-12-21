@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"aws-wallet/services"
+	"aws-wallet/http/services"
 
 	"github.com/gin-gonic/gin"
 )

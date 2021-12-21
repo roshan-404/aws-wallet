@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"aws-wallet/models"
+	"aws-wallet/database/models"
 	"fmt"
 	"os"
 	"time"

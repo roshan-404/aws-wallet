@@ -1,7 +1,7 @@
 package routes
 
 import (
-	ctrl "aws-wallet/controller"
+	ctrl "aws-wallet/http/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,5 +9,5 @@ import (
 func userRoutes(router *gin.RouterGroup) {
 	router.POST("signin", ctrl.SignIn)
 	router.POST("signup", ctrl.SignUp)
-	router.POST("refresh", ctrl.RefreshToken)
+	router.POST("refreshToken", ctrl.RefreshToken)
 }

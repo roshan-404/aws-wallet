@@ -1,8 +1,8 @@
 package services
 
 import (
-	"aws-wallet/repository"
-	"aws-wallet/utils"
+	"aws-wallet/http/repository"
+	"aws-wallet/http/utils"
 
 	"github.com/gin-gonic/gin"
 )

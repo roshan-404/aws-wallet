@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"aws-wallet/models"
-	"aws-wallet/utils"
+	"aws-wallet/database/models"
+	"aws-wallet/http/utils"
 
 	"github.com/gin-gonic/gin"
 )

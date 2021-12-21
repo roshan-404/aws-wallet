@@ -1,9 +1,10 @@
 package services
 
 import (
-	"aws-wallet/models"
-	"aws-wallet/repository"
-	"aws-wallet/utils"
+	"aws-wallet/database/models"
+	"aws-wallet/http/repository"
+	"aws-wallet/http/utils"
+	"aws-wallet/http/validator"
 	"fmt"
 	"time"
 
@@ -14,6 +15,11 @@ import (
 type Response models.Response
 
 func VerifyUser(user *models.User) (res Response, status int) {
+	vErr := validator.SigninValidator(user)
+	if vErr != nil {
+		return Response{Success: false, Message: vErr.Error(), Data: nil}, 400
+	}
+
 	item, err := repository.GetItem(user)
 	if err != nil {
 		return Response{Success: true, Message: err.Error(), Data: nil}, 400
