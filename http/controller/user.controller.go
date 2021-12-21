@@ -9,7 +9,7 @@ import (
 )
 
 func SignIn(ctx *gin.Context) {
-	var user models.User
+	var user models.SignIn
 
 	if credErr := ctx.ShouldBindJSON(&user); credErr != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, "Invalid input provided")

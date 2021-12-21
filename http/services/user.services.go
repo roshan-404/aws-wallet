@@ -6,7 +6,7 @@ import (
 	"aws-wallet/http/utils"
 	"aws-wallet/http/validator"
 	"fmt"
-	"time"
+	"os"
 
 	uuid "github.com/gofrs/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -14,13 +14,14 @@ import (
 
 type Response models.Response
 
-func VerifyUser(user *models.User) (res Response, status int) {
+func VerifyUser(user *models.SignIn) (res Response, status int) {
+	//validate user
 	vErr := validator.SigninValidator(user)
 	if vErr != nil {
 		return Response{Success: false, Message: vErr.Error(), Data: nil}, 400
 	}
 
-	item, err := repository.GetItem(user)
+	item, err := repository.GetItem(user.Username)
 	if err != nil {
 		return Response{Success: true, Message: err.Error(), Data: nil}, 400
 	}
@@ -34,14 +35,12 @@ func VerifyUser(user *models.User) (res Response, status int) {
 		return Response{Message: "Something went wrong!", Data: nil, Success: false}, 500
 	}
 
-	AccessExpiresTime := time.Unix(token.AtExpires, 0).String()
-	RefreshExpiresTime := time.Unix(token.RtExpires, 0).String()
-
+	
 	tokens := map[string]string{
 		"access_token":  token.AccessToken,
 		"refresh_token": token.RefreshToken,
-		"access-token-expiry" : AccessExpiresTime,
-		"refresh-token-expiry" : RefreshExpiresTime,
+		"access-token-expiry" : os.Getenv("ACCESS_TOKEN_EXPIRY"),
+		"refresh-token-expiry" : os.Getenv("REFRESH_TOKEN_EXPIRY"),
 
 	}
 
@@ -49,12 +48,17 @@ func VerifyUser(user *models.User) (res Response, status int) {
 }
 
 func CreateUser(user *models.User) (res Response, status int) {
+	//validate the fields 
+	vErr := validator.SignUpValidator(user)
+	if vErr != nil {
+		return Response{Success: false, Message: vErr.Error(), Data: nil}, 400
+	}
 	// check if user exists
-	exists, err := repository.FindItem(user)
+	exists, err := repository.FindItem(user.Username)
 	if err != nil {
 		return Response{Success: false, Message: err.Error(), Data: nil}, 500
 	}
-	if !exists {
+	if exists {
 		return Response{Success: false, Message: "User already exists!", Data: nil}, 500
 	}
 

@@ -15,7 +15,7 @@ var td = &models.TokenDetails{}
 func CreateToken(username string, id string) (*models.TokenDetails, error) {
 	
 	td.AtExpires = time.Now().Add(time.Minute * 40).Unix()
-	td.RtExpires = time.Now().Add(time.Hour * 2).Unix()
+	td.RtExpires = time.Now().Add(time.Minute * 120).Unix()
 
 	var err error
 	//Creating Access Token
