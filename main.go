@@ -9,6 +9,19 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// @title AWS Wallet API Documentation.
+// @version 1.0.0
+// @description A service where users can register themselves and can have their personal account to store their files.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name Roshan Kumar Ojha
+// @contact.email roshankumarojha04@gmail.com
+
+// @host localhost:3000
+// @BasePath /api/v1
+
+// var addr = flag.String("addr", ":8080", "http service address")
+
 func main() {
 	fmt.Println("AWS wallet starting ...")
 

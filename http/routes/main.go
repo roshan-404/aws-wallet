@@ -1,9 +1,12 @@
 package routes
 
 import (
+	"aws-wallet/docs"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func RouterSetup() *gin.Engine {
@@ -16,13 +19,19 @@ func RouterSetup() *gin.Engine {
 
 	// Api Prefix
 	apiPrefix := os.Getenv("API_PREFIX")
-	// version 1
+	// version 
 	apiVersion := os.Getenv("API_VERSION")
 
-	prefix := router.Group("/" + apiPrefix + "/" + apiVersion)
+	basePath := "/" + apiPrefix + "/" + apiVersion
+	
+	prefix := router.Group(basePath)
 	// user api routes
 	userRoutes(prefix)
 	bucketRoutes(prefix)
+
+	//Swagger documentation route
+	docs.SwaggerInfo.BasePath = basePath
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	return router
 }
