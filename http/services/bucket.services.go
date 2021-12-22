@@ -8,27 +8,34 @@ import (
 )
 
 func UploadFile(ctx *gin.Context) (res Response, status int) {
-	file, handler, fileErr := ctx.Request.FormFile("myFile")
 
-	if fileErr != nil {
-		return Response{Success: false, Message: fileErr.Error(), Data: nil}, 415
-	}
-	defer file.Close()
-
-	//getting the bucket name from the headers 
+	//getting the bucket name from the headers
 	username := ctx.Request.Header.Get("username")
-	userid := ctx.Request.Header.Get("userId")
-	bucketName := utils.CreateBucketName(username, userid)
+    userId := ctx.Request.Header.Get("userId")
 
-	
-	// upload the file
-	resp,err := repository.UploadObject(bucketName, handler.Filename, file)
+    form, err := ctx.MultipartForm()
+    if err != nil {
+        return Response{Success: false, Message: err.Error(), Data: nil}, 415
+    }
+    files := form.File["myFile"]
+
+    for _, file := range files {
+        f, fErr := file.Open()
+        if fErr != nil {
+            return Response{Success: false, Message: err.Error(), Data: nil}, 415
+        }
+        defer f.Close()
+
+        bucketName := utils.CreateBucketName(username, userId)
+        err = repository.UploadObject(bucketName, file.Filename, f)
+
+        if err != nil {
+            return Response{Success: false, Message: err.Error(), Data: nil}, 400
+        }
+
+    }
   
-	if err != nil {
-		return Response{Success: false, Message: err.Error(), Data: nil}, 400
-	}
-  
-	return Response{Success: false, Message: "file uploaded successfully", Data: resp}, 200
+	return Response{Success: false, Message: "file uploaded successfully", Data: nil}, 200
 }
 
 func GetAllItem(ctx *gin.Context) (res Response, status int) {
