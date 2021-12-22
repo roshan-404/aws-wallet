@@ -10,7 +10,7 @@ A service where users can register themselves and can create a personal space fo
 - Remember to create your own .env based on the template provided. 
 
 ## AWS configuration 
-- You will have to add the follwing in the aws-cli configuration file. 
+- You will need to have a AWS account and then add the follwing in the .evn configuration file. 
 1. Access key ID 
 2. Secret access key 
 
@@ -21,3 +21,7 @@ go run main.go
 
 ## Documentation of API's
 > Run the app, and browse to http://localhost:3000/swagger/index.html. Find the Swagger 2.0 Api documents. 
+
+
+## swagger documentation
+### documentation of API's are available here https://go-aws.herokuapp.com/swagger/index.html
