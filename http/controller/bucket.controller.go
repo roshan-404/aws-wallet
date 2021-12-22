@@ -8,7 +8,7 @@ import (
 
 // Upload controller
 // @Summary authenticated users can upload files.
-// @Description You need to signedIn and give a Token in headers then "upload item" will execute.
+// @Description You need to signedIn and give a Token in headers then "upload item" will execute. The input id myFile will be handled by multipart form fuction.
 // @Tags File Upload
 // @Accept  json
 // @Produce  json
