@@ -1,28 +1,26 @@
 package utils
 
 import (
+	"aws-wallet/database/config"
 	"encoding/json"
-	"fmt"
 	"math/rand"
+	"os"
+	"strconv"
+	"time"
 )
 
-func main(id string) {
+func CreateOTP(id string) (int, error) {
     num := rand.Intn(1000000)
 
-    json, err := json.Marshal(int(num))
-    if err != nil {
-        fmt.Println(err)
-    }
+	json, err := json.Marshal(int(num))
+	if err != nil {
+		return 0, err
+	}
+	rdExTime, _ := strconv.Atoi(os.Getenv("REDIS_EXPIRATION_TIME"))
+	err = config.RedisClient.Set(id, json, time.Duration(rdExTime)*time.Minute).Err()
+	if err != nil {
+		return 0, err
+	}
 
-    fmt.Println(json)
-
-    err = client.Set("id1234", json, 0).Err()
-    if err != nil {
-        fmt.Println(err)
-    }
-    val, err := client.Get("id1234").Result()
-    if err != nil {
-        fmt.Println(err)
-    }
-    fmt.Println(val)
+	return num, nil
 }

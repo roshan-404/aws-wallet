@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	uuid "github.com/gofrs/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -69,7 +70,7 @@ func CreateUser(user *models.User) (res Response, status int) {
 	// hash password
 	hash, hashErr := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
 	if hashErr != nil {
-		return Response{Success: false, Message: "Something went wrongssdfsd!", Data: nil}, 500
+		return Response{Success: false, Message: "Something went wrong!", Data: nil}, 500
 	}
 
 	// assign id & hash password
@@ -90,10 +91,29 @@ func CreateUser(user *models.User) (res Response, status int) {
 		return Response{Success: false, Message: err.Error(), Data: nil}, 400
 	}
 
-	isSend := verification.SendSMS(user.PhoneNumber, "Welcome to awsCloud services.")
+	otp, err := utils.CreateOTP(user.Id)
+	if err != nil {
+		return Response{Success: false, Message: err.Error(), Data: nil}, 400
+	}
+
+	isSend := verification.SendSMS(user.PhoneNumber, "Welcome to awsCloud services. OTP - "+strconv.Itoa(otp))
 	if !isSend {
 		log.Println("Message failed to send - ", user.PhoneNumber)
 	}
 
-	return Response{Success: true, Message: "SignUp successful!", Data: nil}, 200
+	return Response{Success: true, Message: "SignUp successful!", Data: user}, 200
+}
+
+func VerifyOTP(otp *models.OTP) (res Response, status int) {
+	err := verification.VerifyOTP(otp.Id, otp.OTP)
+	if err != nil {
+		return Response{Success: false, Message: err.Error(), Data: nil}, 400
+	}
+
+	dberr := repository.UpadteItem(otp.Id, "true")
+	if dberr != nil {
+		return Response{Success: false, Message: dberr.Error(), Data: nil}, 400
+	}
+
+	return Response{Success: true, Message: "OTP varification successfully!", Data: nil}, 200
 }

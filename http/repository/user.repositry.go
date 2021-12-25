@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
 func GetItem(username string) (res map[string]interface{}, err error) {
@@ -62,37 +63,20 @@ func PutItem(user *models.User) error {
 	return dberr
 }
 
-// data, err := config.Client.Query(context.TODO(), &dynamodb.QueryInput{
-// 	TableName:              aws.String(os.Getenv("TABLE_NAME")),
-// 	IndexName:              aws.String("username"),
-// 	KeyConditionExpression: aws.String("username = :username"),
-// 	ExpressionAttributeValues: map[string]types.AttributeValue{
-// 		":username": &types.AttributeValueMemberS{Value: user.Username},
-// 	},
-// })
-// if err != nil {
-// 	fmt.Errorf("Query: %v\n", err)
-// }
-// err = attributevalue.UnmarshalListOfMaps(data.Items, user)
-// if err != nil {
-// 	fmt.Errorf("UnmarshalListOfMaps: %v\n", err)
-// }
-// fmt.Println(data)
 
-// data, err := config.Client.GetItem(context.TODO(), &dynamodb.GetItemInput{
-// 	TableName: aws.String(os.Getenv("TABLE_NAME")),
-// 	Key: map[string]types.AttributeValue{
-// 		"username": &types.AttributeValueMemberS{Value: user.Username},
-// 	},
-// })
-// if err != nil {
-// 	fmt.Println("GetItem: \n", err)
-// }
-// if data.Item == nil {
-// 	fmt.Println("GetItem: Company not found.")
-// }
-// err = attributevalue.UnmarshalMap(data.Item, &user)
-// if err != nil {
-// 	fmt.Println("UnmarshalMap: \n", err)
-// }
-// fmt.Println(user)
+func UpadteItem(id string, attValue string) error {
+	_, dberr := c.DB_client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
+		TableName: aws.String(os.Getenv("TABLE_NAME")),
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: id},
+		},
+		UpdateExpression: aws.String("set verified = :verified"),
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":verified": &types.AttributeValueMemberS{Value: attValue},
+		},
+	})
+
+	return dberr
+}
+
+ 

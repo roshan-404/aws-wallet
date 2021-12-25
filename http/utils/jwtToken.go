@@ -4,6 +4,7 @@ import (
 	"aws-wallet/database/models"
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -13,9 +14,10 @@ import (
 var td = &models.TokenDetails{}
 
 func CreateToken(username string, id string) (*models.TokenDetails, error) {
-	
-	td.AtExpires = time.Now().Add(time.Minute * 40).Unix()
-	td.RtExpires = time.Now().Add(time.Minute * 120).Unix()
+	accessExpiration,_ := strconv.Atoi(os.Getenv("ACCESS_TOKEN_EXPIRY"))
+	refreshExpiration,_ := strconv.Atoi(os.Getenv("REFRESH_TOKEN_EXPIRY"))
+	td.AtExpires = time.Now().Add(time.Minute * time.Duration(accessExpiration)).Unix()
+	td.RtExpires = time.Now().Add(time.Minute * time.Duration(refreshExpiration)).Unix()
 
 	var err error
 	//Creating Access Token
