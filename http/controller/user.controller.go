@@ -71,7 +71,13 @@ func SignUp(ctx *gin.Context) {
 // @Produce  json
 // @Router /refreshToken [post]
 func RefreshToken(ctx *gin.Context) {
+	res, status := services.RefreshToken(ctx)
+	if !res.Success {
+		ctx.JSON(status, res)
+		return
+	}
 
+	ctx.JSON(status, res)
 }
 
 

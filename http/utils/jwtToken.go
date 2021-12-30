@@ -88,3 +88,26 @@ func VerifyAccessToken(ctx *gin.Context) (jwt.Claims, string) {
 		return nil, "You are not logged In"
 	}
 }
+
+func VerifyRefreshToken(ctx *gin.Context) (*models.TokenDetails, string) {
+	if data := ctx.Request.Header["Authorization"][0]; data != "" {
+		token, err := verifyToken(data, []byte(os.Getenv("REFRESH_SECRET")))
+		if err != "" {
+			return nil, err
+		}
+
+		// extract email from token
+		ext := token.Claims.(jwt.MapClaims)
+		username := ext["username"]
+		userId := ext["userId"]
+
+		// create new tokens
+		td, Terr := CreateToken(fmt.Sprintf("%v", username), fmt.Sprintf("%v", userId))
+		if Terr != nil {
+			return nil, "Something went wrong!"
+		}
+		return td, ""
+	} else {
+		return nil, "You are not logged In"
+	}
+}

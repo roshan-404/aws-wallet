@@ -13,6 +13,8 @@ import (
 
 	uuid "github.com/gofrs/uuid"
 	"golang.org/x/crypto/bcrypt"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Response models.Response
@@ -116,4 +118,18 @@ func VerifyOTP(otp *models.OTP) (res Response, status int) {
 	}
 
 	return Response{Success: true, Message: "OTP varification successfully!", Data: nil}, 200
+}
+
+func RefreshToken(ctx *gin.Context) (res Response, status int) {
+	td, err := utils.VerifyRefreshToken(ctx)
+
+	if err != "" {
+		return Response{Success: false, Message: err, Data: nil}, 400
+	}
+	
+	tokens := map[string]string{
+		"access_token":  td.AccessToken,
+		"refresh_token": td.RefreshToken,
+	}
+	return Response{Success: true, Message: "Token Refreshed successfully", Data: tokens}, 200
 }

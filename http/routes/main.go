@@ -13,7 +13,7 @@ func RouterSetup() *gin.Engine {
 	router := gin.Default()
 
 	//home route
-	router.POST("/", func(ctx *gin.Context){
+	router.GET("/", func(ctx *gin.Context){
 		ctx.JSON(200, "Welcome to AWS WALLET services for next routes use prefix /api/v1")
 	})
 
